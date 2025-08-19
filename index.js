@@ -1,14 +1,28 @@
 import express from "express";
+import multer from "multer";
+import { storage } from "./config/multer.js";
 
 const app = express();
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 1024000,
+  },
+});
 const PORT = 8000;
 
-app.use("/public", express.static("public")); //http://localhost:8000/public/example.txt
-app.use("/images", express.static("images")); //http://localhost:8000/images/abc.jpg
+app.use(express.urlencoded({ extended: true }));
+app.use(upload.single("image"));
 
 // Define a simple route
 app.get("/", (req, res) => {
   res.send("Hello Express");
+});
+
+app.post("/form", (req, res) => {
+  console.log(req.body);
+  console.log(req.file);
+  res.send("Form recieved");
 });
 
 app.listen(PORT, () => {
