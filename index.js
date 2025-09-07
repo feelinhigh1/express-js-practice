@@ -1,29 +1,61 @@
 import express from "express";
-import multer from "multer";
-import { storage } from "./config/multer.js";
+import { connectDB } from "./config/db.js";
+import { Person } from "./models/Person.js";
 
 const app = express();
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 1024000,
-  },
-});
-const PORT = 8000;
+const PORT = 3000;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(upload.single("image"));
+await connectDB();
+
+app.use(express.json());
 
 // Define a simple route
 app.get("/", (req, res) => {
   res.send("Hello Express");
 });
 
-app.post("/form", (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
-  res.send("Form recieved");
+// Saving data in mongoDB
+app.post("/person", async (req, res) => {
+  try {
+    const { name, age, email } = req.body;
+    const newPerson = new Person({
+      name,
+      age,
+      email,
+    });
+    await newPerson.save();
+    console.log(newPerson);
+    res.send("Person data Added");
+  } catch (error) {
+    res.send(error.message);
+  }
 });
+
+// Updating data in mongodb
+app.put("/person", async (req, res) => {
+  const { id } = req.body;
+
+  const personData = await Person.findByIdAndUpdate(id, { age: 28 }); // .findOne for single entry, .findById for id based search
+
+  console.log(personData);
+
+  res.send("Person data updated");
+});
+
+//Deleting data in mongodb
+app.delete("/person/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const personData = await Person.findByIdAndDelete(id);
+
+  console.log(personData);
+
+  res.send("Person data deleted");
+});
+
+// app.get("/person", (req, res) => {
+//   res.send(req.body);
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
