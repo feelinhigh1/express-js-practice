@@ -3,3 +3,95 @@ Youtube name -> Great Stack
 Express JS Full Course from beginner to pro 2025
 
 
+
+Connecting to Datbase code
+___________________________
+
+-------index.js-----------
+
+import express from "express";
+import { connectDB } from "./config/db.js";
+import { Person } from "./models/Person.js";
+
+const app = express();
+const PORT = 3000;
+
+await connectDB();
+
+app.use(express.json());
+
+// Define a simple route
+app.get("/", (req, res) => {
+  res.send("Hello Express");
+});
+
+// Saving data in mongoDB
+app.post("/person", async (req, res) => {
+  try {
+    const { name, age, email } = req.body;
+    const newPerson = new Person({
+      name,
+      age,
+      email,
+    });
+    await newPerson.save();
+    console.log(newPerson);
+    res.send("Person data Added");
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+// Updating data in mongodb
+app.put("/person", async (req, res) => {
+  const { id } = req.body;
+
+  const personData = await Person.findByIdAndUpdate(id, { age: 28 }); // .findOne for single entry, .findById for id based search
+
+  console.log(personData);
+
+  res.send("Person data updated");
+});
+
+//Deleting data in mongodb
+app.delete("/person/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const personData = await Person.findByIdAndDelete(id);
+
+  console.log(personData);
+
+  res.send("Person data deleted");
+});
+
+// app.get("/person", (req, res) => {
+//   res.send(req.body);
+// });
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+
+
+
+
+------Cookies-------
+
+npm install cookie-parser
+___________________________
+
+
+Cookies are small data files sent from the server to the client, stored on the client's browser. They are sent back with every request to the server.
+
+
+Uses of Cookies
+
+-> Session Management - Maintaining user login sessions.
+-> Personalization - Enhancing user experience with recommendations
+-> User Tracking - Monitoring user behavior on the website
+
+
+
+
+

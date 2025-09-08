@@ -1,61 +1,25 @@
 import express from "express";
-import { connectDB } from "./config/db.js";
-import { Person } from "./models/Person.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = 3000;
-
-await connectDB();
-
-app.use(express.json());
+app.use(cookieParser());
 
 // Define a simple route
 app.get("/", (req, res) => {
+  res.cookie("myCookie", "cookieValue"); // , { maxAge: 360000 } means expires in 6 minutes
   res.send("Hello Express");
 });
 
-// Saving data in mongoDB
-app.post("/person", async (req, res) => {
-  try {
-    const { name, age, email } = req.body;
-    const newPerson = new Person({
-      name,
-      age,
-      email,
-    });
-    await newPerson.save();
-    console.log(newPerson);
-    res.send("Person data Added");
-  } catch (error) {
-    res.send(error.message);
-  }
+app.get("/fetch", (req, res) => {
+  console.log(req.cookies);
+  res.send("API Called");
 });
 
-// Updating data in mongodb
-app.put("/person", async (req, res) => {
-  const { id } = req.body;
-
-  const personData = await Person.findByIdAndUpdate(id, { age: 28 }); // .findOne for single entry, .findById for id based search
-
-  console.log(personData);
-
-  res.send("Person data updated");
+app.get("/remove-cookie", (req, res) => {
+  res.clearCookie("myCookie");
+  res.send("Cookie Removed");
 });
-
-//Deleting data in mongodb
-app.delete("/person/:id", async (req, res) => {
-  const { id } = req.params;
-
-  const personData = await Person.findByIdAndDelete(id);
-
-  console.log(personData);
-
-  res.send("Person data deleted");
-});
-
-// app.get("/person", (req, res) => {
-//   res.send(req.body);
-// });
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
