@@ -94,4 +94,22 @@ Uses of Cookies
 
 
 
+------ Sessions -------
+
+npm install express-session
+____________________________
+
+HTTP is stateless, meaning each request is independent and does not retain user data.
+
+To persist data between requests, we can use: 
+
+-> Cookies - Stored on the client, visible to users.
+-> URL Parameters - Can be manipulated and exposed.
+
+Sessions solve this problem by storing user data on the server and associating it with a unique Session ID, which is stored on the client as a cookie.
+
+
+
+
+
 
