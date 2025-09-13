@@ -133,7 +133,12 @@ The basic authentication flow:
 
 
 JWT-based Authentication
-_________________________
+
+npm i jsonwebtoken
+____________________
+
+npm i bcryptjs
+____________________
 
 JWT (JSON Web Token) is a stateless authentication method that sends a token instead of storing sessions on the server
 
@@ -143,6 +148,46 @@ How JWT Works:
 2. The client stores the token (in localStorage or Authorization Header)
 3. The token is sent with every request
 4. The server verifies the token and allows access.
+
+
+Code:
+
+const users = [];
+
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  users.push({
+    username,
+    hashedPassword,
+  });
+  res.send("User registered");
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find((u) => u.username === username);
+  if (!user || !(await bcrypt.compare(password, user.hashedPassword))) {
+    return res.send("Invalid credentials");
+  }
+  const token = jwt.sign({ username }, "test#secret");
+  res.json({ token });
+});
+
+app.get("/dashboard", (req, res) => {
+  try {
+    const token = req.header("Authorization");
+    const decodedToken = jwt.verify(token, "test#secret");
+    if (decodedToken.username) {
+      return res.send(`Welcome to your dashboard, ${decodedToken.username}`);
+    } else {
+      res.send("Access Denied");
+    }
+    res.send(`Welcome to your dashboard, ${decodedToken.username}`);
+  } catch (err) {
+    res.send("Invalid Token");
+  }
+});
 
 
 

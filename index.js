@@ -1,19 +1,11 @@
 import express from "express";
-import cookieParser from "cookie-parser";
-import session from "express-session";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(cookieParser());
-app.use(
-  session({
-    secret: "sample-secret",
-    resave: false, // don't save session if unmodified
-    saveUninitialized: true,
-  })
-);
 
 // Define a simple route
 app.get("/", (req, res) => {
@@ -24,9 +16,10 @@ const users = [];
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
   users.push({
     username,
-    password,
+    hashedPassword,
   });
   res.send("User registered");
 });
@@ -34,18 +27,26 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const user = users.find((u) => u.username === username);
-  if (!user || password !== user.password) {
+  if (!user || !(await bcrypt.compare(password, user.hashedPassword))) {
     return res.send("Invalid credentials");
   }
-  req.session.user = user;
-  res.send("User Logged In");
+  const token = jwt.sign({ username }, "test#secret");
+  res.json({ token });
 });
 
 app.get("/dashboard", (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).send("Please login to access this page");
+  try {
+    const token = req.header("Authorization");
+    const decodedToken = jwt.verify(token, "test#secret");
+    if (decodedToken.username) {
+      return res.send(`Welcome to your dashboard, ${decodedToken.username}`);
+    } else {
+      res.send("Access Denied");
+    }
+    res.send(`Welcome to your dashboard, ${decodedToken.username}`);
+  } catch (err) {
+    res.send("Invalid Token");
   }
-  res.send(`Welcome to your dashboard, ${req.session.user.username}`);
 });
 
 app.listen(PORT, () => {
