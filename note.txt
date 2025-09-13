@@ -111,5 +111,39 @@ Sessions solve this problem by storing user data on the server and associating i
 
 
 
+---- Authentication in ExpressJS -----
+
+Authentication is the process of verifying the identity of a user. In ExpressJS, authentication ensures that only authorized users can accesss certain resources.
+
+2 ways to implement authentication: 
+____________________________________
+
+-> Session-Based Authentication (Uses cookies and Sessions)
+-> Token-Based Authentication (Uses JWT or OAuth tokens)
+
+
+The basic authentication flow:
+
+1. The user sends login credentials (email/password)
+2. The server verifies the credentials against a database.
+3. If valid, the server responds with a session (cookie) or a JWT token.
+4. The client stores this session or token for subsequent requests.
+5. For each request, the client sends the session/token for verification.
+
+
+
+JWT-based Authentication
+_________________________
+
+JWT (JSON Web Token) is a stateless authentication method that sends a token instead of storing sessions on the server
+
+How JWT Works:
+
+1. The user logs in and recieves a JWT token.
+2. The client stores the token (in localStorage or Authorization Header)
+3. The token is sent with every request
+4. The server verifies the token and allows access.
+
+
 
 
