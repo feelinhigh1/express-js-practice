@@ -284,5 +284,18 @@ Structuring an Express app
 
 
 
+-------- Error Handling In ExpressJS ---------
+
+When somethong goes wrong in your Express.js application, like a missing file, an invalid request, or a failes database connection, your app should catch these errors and respond properly instead of crashing.
+
+
+How to handle Errors?
+  -> Express has a special type of function called error-handling middleware. It looks like a regular middleware fuction but has four parameters instead of three:
+
+  (err, req, res, next) => {...}
+
+  Whenever you call next(err), Express knows that an error has occured and will skip to this special middleware.
+
+  
 
 
