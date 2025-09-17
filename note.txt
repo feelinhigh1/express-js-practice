@@ -197,28 +197,27 @@ Code:
 A RESTful API is a web service that follows REST principles, using HTTP methods to perform action on resources.
 
 
-REST API PRINCIPLES
-____________________
+REST API PRINCIPLES: 
 
-1 Statless
--> Every request from the client must contain all the necessary information.
+  1 Statless
+  -> Every request from the client must contain all the necessary information.
 
-2 Client-Server ARchitecture
--> The frontend and backend communicate via a well-defined API.
+  2 Client-Server ARchitecture
+  -> The frontend and backend communicate via a well-defined API.
 
-3 Resource-based
--> Everything is treated as a resource (e.g. users, products, orders), each with a unique URL.
+  3 Resource-based
+  -> Everything is treated as a resource (e.g. users, products, orders), each with a unique URL.
 
-4 HTTP Methods for CRUD Operations
+  4 HTTP Methods for CRUD Operations
 
--> 
+  -> 
 
-HTTP Method        Action                Example EndPoint
+  HTTP Method        Action                Example EndPoint
 
-GET               Read Data              /api/product/list
-POST              Create Data            /api/product/add
-PUT               Update Data            /api/product/update
-DELETE            Deleta Data            /api/product/del/:id
+  GET               Read Data              /api/product/list
+  POST              Create Data            /api/product/add
+  PUT               Update Data            /api/product/update
+  DELETE            Deleta Data            /api/product/del/:id
 
 
 
@@ -254,6 +253,35 @@ Why Status Codes Matter:
   -> Standardization : They provide a consistent way to communicate results across different APIs, making it easier for developers to work with APIs.
 
 In short, status codes are necessary to help the client understand the outcome of the request and to hanlde any issues accordingly.
+
+
+
+
+------ Project Scaffolding in ExpressJS --------
+
+When building a large-scale Express application, organizing the project structure is crucial for maintainability and scalability.
+
+
+Structuring an Express app
+
+  A well-structured Express app follows the MVC (Model-View-Controller) pattern:
+
+  /project-root
+  | --- /src
+  |     |---- /routes                # API routes
+  |     |---- /controllers           # Handles request logic
+  |     |---- /models                # Database models
+  |     |---- /middlewares           # Custom middlewares
+  |     |---- /config                # Configuration Files
+  |     |---- /utils                 # Helper functions
+  | --- /public                      # Static assets (CSS,images)
+  | --- /views                       # Views (if using templating engine)
+  | --- /node_modules                # Dependencies
+  | --- .env                         # Environment variables
+  | --- package.json                 # Project metadata & dependencies
+  | --- /server.js                   # Entry Point
+  
+
 
 
 
